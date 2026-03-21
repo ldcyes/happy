@@ -36,7 +36,7 @@ export const initialMachineMetadata: MachineMetadata = {
 // Get environment variables for a profile, filtered for agent compatibility
 async function getProfileEnvironmentVariablesForAgent(
   profileId: string,
-  agentType: 'claude' | 'codex' | 'gemini'
+  agentType: 'claude' | 'codex' | 'gemini' | 'opencode'
 ): Promise<Record<string, string>> {
   try {
     const settings = await readSettings();
@@ -48,7 +48,8 @@ async function getProfileEnvironmentVariablesForAgent(
     }
 
     // Check if profile is compatible with the agent
-    if (!validateProfileForAgent(profile, agentType)) {
+    // opencode uses environment variables from the profile without a specific compatibility flag
+    if (agentType !== 'opencode' && !validateProfileForAgent(profile, agentType)) {
       logger.debug(`[DAEMON RUN] Profile ${profileId} not compatible with agent ${agentType}`);
       return {};
     }
@@ -386,8 +387,14 @@ export async function startDaemon(): Promise<void> {
 
           // Construct command for the CLI
           const cliPath = join(projectPath(), 'dist', 'index.mjs');
-          // Determine agent command - support claude, codex, and gemini
-          const agent = options.agent === 'gemini' ? 'gemini' : (options.agent === 'codex' ? 'codex' : 'claude');
+          // Determine agent command - support claude, codex, gemini, and opencode
+          let agent: string;
+          switch (options.agent) {
+            case 'codex': agent = 'codex'; break;
+            case 'gemini': agent = 'gemini'; break;
+            case 'opencode': agent = 'opencode'; break;
+            default: agent = 'claude'; break;
+          }
           const fullCommand = `node --no-warnings --no-deprecation ${cliPath} ${agent} --happy-starting-mode remote --started-by daemon`;
 
           // Spawn in tmux with environment variables
@@ -470,7 +477,7 @@ export async function startDaemon(): Promise<void> {
         if (!useTmux) {
           logger.debug(`[DAEMON RUN] Using regular process spawning`);
 
-          // Construct arguments for the CLI - support claude, codex, and gemini
+          // Construct arguments for the CLI - support claude, codex, gemini, and opencode
           let agentCommand: string;
           switch (options.agent) {
             case 'claude':
@@ -482,6 +489,9 @@ export async function startDaemon(): Promise<void> {
               break;
             case 'gemini':
               agentCommand = 'gemini';
+              break;
+            case 'opencode':
+              agentCommand = 'opencode';
               break;
             default:
               return {
