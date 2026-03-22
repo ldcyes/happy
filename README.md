@@ -76,6 +76,8 @@ happy codex
 
 On your computer, run `happy` instead of `claude` or `happy codex` instead of `codex` to start your AI through our wrapper. When you want to control your coding agent from your phone, it restarts the session in remote mode. To switch back to your computer, just press any key on your keyboard.
 
+Happy runs on **macOS, Linux, and Windows (via WSL 2)**. If you are on Windows, see the **[WSL + Android guide](docs/wsl-android.md)** for step-by-step instructions on running the CLI in WSL and pairing it with your Android phone.
+
 ## 🔥 Why Happy Coder?
 
 - 📱 **Mobile access to Claude Code and Codex** - Check what your AI is building while away from your desk
@@ -98,6 +100,7 @@ We're engineers scattered across Bay Area coffee shops and hacker houses, consta
 ## 📚 Documentation & Contributing
 
 - **[Documentation Website](https://happy.engineering/docs/)** - Learn how to use Happy Coder effectively
+- **[WSL + Android Guide](docs/wsl-android.md)** - Run the CLI in WSL on Windows and control it from your Android phone
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development setup including iOS, Android, and macOS desktop variant builds
 - **[Edit docs at github.com/slopus/slopus.github.io](https://github.com/slopus/slopus.github.io)** - Help improve our documentation and guides
 
